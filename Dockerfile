@@ -18,4 +18,5 @@ RUN chown -R shoutsky. .
 
 ENV FLASK_APP=src/app.py
 ENV FLASK_ENV=development
+ENV FLASK_DEBUG=true
 CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0"]
