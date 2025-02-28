@@ -1,38 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Jank's POTD Flask App</title>
-        <link rel="stylesheet" href= "{{ url_for('static',filename='styles/index.css') }}">
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    </head>
-    <body>
-        <div id="logo"> 
-            <a href ="https://jankeemunkey.com">
-                <img src="{{ url_for('static', filename='favicon-256x256.png') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planet of the Day - NASA Image</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <!-- Optional: Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="https://jankeemunkey.com">
+                    <img src="{{ url_for('static', filename='favicon-256x256.png') }}" alt="Logo">
+                </a>
+            </div>
+        </nav>
+
+        <div class="cta-container">
+            <a href="{{ url_for('index') }}" class="cta-button">
+                <span>Home Page</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
             </a>
         </div>
-    <h2>
-        <div id="home_redirect"> 
-            <a href ="{{ url_for('index') }}">Home Page</a>
-        </div>
-    </h2>
-        <header>
-            <h1>Planet of the Day Information - IN ACTION!</h1>
+
+        <header class="hero">
+            <h1>Planet of the Day Information</h1>
+            <p class="tagline">{{ date }}</p>
         </header>
-        </br>
-        <div class="app_in_action">
-            Today's Date: {{ date }}
-            </br>
-            <H2>POTD Image:</H2><img src="{{ image_url }}" alt="Nasa_POTD"></img>
-            </br>
-            Image Title: {{ title }}
-            </br>
-            </br>
-            <H2>Facts on the Image:</H2>
-            {{ explanation }}
+
+        <section class="content">
+            <div class="card intro-card">
+                <h2>{{ title }}</h2>
+                <div class="image-container">
+                    <img src="{{ image_url }}" alt="NASA Planet of the Day" class="potd-image">
+                </div>
+                <h3>Facts About the Image</h3>
+                <p>{{ explanation }}</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 - Skylar Houghton | Powered by <a href="https://api.nasa.gov/" target="_blank">NASA API</a></p>
         </div>
-        <footer>
-            <p>&copy; 2021 - Skylar Houghton, Jank the Munkey</p>
-        </footer>
-    </body>
+    </footer>
+</body>
 </html>

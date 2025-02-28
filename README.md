@@ -37,23 +37,11 @@ A lightweight web application built with the Python Flask framework that display
    cd potd-web-app
    ```
 
-2. Create the following environment files:
+2. Create the following environment var, suggested env var file:
 
    `common.env`:
    ```
    export NASA_API_KEY="your_nasa_api_key_here"
-   ```
-
-   `dev.env`:
-   ```
-   export FLASK_ENV=development
-   export FLASK_DEBUG=true
-   ```
-
-   `prod.env`:
-   ```
-   export FLASK_ENV=production
-   export FLASK_DEBUG=false
    ```
 
 3. Build the Docker container:

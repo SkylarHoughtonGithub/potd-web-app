@@ -4,12 +4,8 @@ __pycache__/
 *$py.class
 
 # Environment files
-.env
-*.env
-.venv
-env/
-venv/
-ENV/
+common.env
+
 
 # Flask stuff
 instance/

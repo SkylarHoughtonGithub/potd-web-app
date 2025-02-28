@@ -1,42 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Jank's POTD Flask App</title>
-        <link rel="stylesheet" href= "{{ url_for('static',filename='styles/index.css') }}">
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    </head>
-    <body>
-        <div id="logo"> 
-            <a href ="https://jankeemunkey.com">
-                <img src="{{ url_for('static', filename='favicon-256x256.png') }}">
-            </a>
-         
-        <header>
-            <h1>Planet of the Day Information Flask Web App</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA APOD - Astronomy Picture of the Day</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <!-- Optional: Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="https://SkylarHoughtonGithub.com">
+                    <img src="{{ url_for('static', filename='favicon-256x256.png') }}" alt="Logo">
+                </a>
+            </div>
+        </nav>
+
+        <header class="hero">
+            <h1>NASA Astronomy Picture of the Day</h1>
+            <p class="tagline">Discover the cosmos with daily updates from NASA</p>
         </header>
-        <hr>
-        <div class="intro">
-            <p>This is a web app to <strong>retrieve planet of the day information</strong> from the NASA provided API. The app will pull the available information for the day. Come back each day for it to be updated and learn something new!
-            </br>
-            I invested in this project to teach myself the <a href ="https://flask.palletsprojects.com/en/1.1.x/"> micro web framework, flask </a>
-            </p>
-            <!-- One thing that was realized about this framework part way through was the data does not seem to update dynamically without stopping the web server, or refreshing the page.
-            The AJAX/Javascript technique is one to look into it seems  -->
-            </br>
-            Let me know any improvement suggestions or feedback at: <a href = "https://github.com/JankeeMunkey">Github</a> or <a href = "https://www.linkedin.com/in/skylarhoughton/">LinkedIn</a>
-        </br>
-        <div class="app">
-            <p>Initiate the App: 
-            </br>
-            <a href ="{{ url_for('nasa_flask_app') }}">Here</a>
-            </p>
+
+        <section class="content">
+            <div class="card intro-card">
+                <h2>About This Project</h2>
+                <p>
+                    This web application connects to NASA's official API to bring you the Astronomy Picture of the Day (APOD). 
+                    Each day, NASA features a different image or photograph of our fascinating universe, along with a brief explanation 
+                    written by a professional astronomer.
+                </p>
+                <p>
+                    I developed this project to explore the <a href="https://flask.palletsprojects.com/en/1.1.x/" target="_blank">Flask micro web framework</a>, 
+                    containerization with Docker, and working with third-party APIs.
+                </p>
+                <p>
+                    Check back daily for new cosmic wonders and expand your understanding of our universe!
+                </p>
+            </div>
+
+            <div class="cta-container">
+                <a href="{{ url_for('nasa_flask_app') }}" class="cta-button">
+                    <span>View Today's Astronomy Picture</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Daily Updates</h3>
+                <p>New astronomical images and explanations every day directly from NASA.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Educational Content</h3>
+                <p>Learn about stars, galaxies, nebulae, and other celestial phenomena.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Responsive Design</h3>
+                <p>Enjoy the cosmos on any device - desktop, tablet, or mobile.</p>
+            </div>
+        </section>
+
+        <section class="connect">
+            <h2>Connect With Me</h2>
+            <p>Have suggestions or feedback? I'd love to hear from you!</p>
+            <div class="social-links">
+                <a href="https://github.com/SkylarHoughtonGithub" target="_blank" class="social-link">GitHub</a>
+                <a href="https://www.linkedin.com/in/skylarhoughton/" target="_blank" class="social-link">LinkedIn</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 - Skylar Houghton | Powered by <a href="https://api.nasa.gov/" target="_blank">NASA API</a></p>
         </div>
-        </div>
-        </div>
-        </br>
-        <hr>
-        <footer>
-            <p>&copy; 2021 - Skylar Houghton, Jank the Munkey</p>
-        </footer>
-    </body>
+    </footer>
+</body>
 </html>
