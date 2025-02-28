@@ -1,0 +1,1 @@
+sudo dnf install python3-devel zlib-devel libjpeg-devel libpng-devel gcc -y
