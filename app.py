@@ -1,7 +1,9 @@
-from flask import Flask
-from flask import request
-from flask import render_template
-import requests, json, urllib
+from flask import Flask, request, render_template
+import requests
+import os
+
+# Set debug mode based on environment variable, defaulting to False
+debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 
 app = Flask(__name__)
 
@@ -11,20 +13,30 @@ def index():
 
 @app.route('/nasa_flask_app.html')
 def nasa_flask_app():
-    #url = 'https://jankeemunkey.com/jank_final.jpg'
-    #print("POTD: " + url)
+    api_key = os.environ.get('NASA_API_KEY')
     
-    #Define api and api token string
-    response = requests.get("https://api.nasa.gov/planetary/apod?api_key=X65Ea66D2ToQk8xj282Mvz1mGdWhOuxSdWLLke1d")
-    response_dict = json.loads(response.text)
-
-    #Enumerate key names
-    date = response_dict['date']
-    explanation = response_dict['explanation']
-    image_url = response_dict['url']
-    title = response_dict['title']
-
-    return render_template('nasa_flask_app.html', date=date, explanation=explanation, image_url=image_url, title=title)
+    try:
+        response = requests.get(f"https://api.nasa.gov/planetary/apod?api_key={api_key}")
+        response.raise_for_status()  # Raise an exception for 4XX/5XX responses
+        
+        response_dict = response.json()
+        
+        # Extract data with defaults in case keys are missing
+        date = response_dict.get('date', 'Unknown date')
+        explanation = response_dict.get('explanation', 'No explanation available')
+        image_url = response_dict.get('url', '')
+        title = response_dict.get('title', 'Unknown title')
+        
+        return render_template('nasa_flask_app.html', 
+                              date=date, 
+                              explanation=explanation, 
+                              image_url=image_url, 
+                              title=title)
+                              
+    except requests.exceptions.RequestException as e:
+        # Handle request errors
+        error_message = f"Error fetching NASA APOD: {str(e)}"
+        return render_template('error.html', error=error_message)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=debug_mode)  # Use the debug mode value set earlier
