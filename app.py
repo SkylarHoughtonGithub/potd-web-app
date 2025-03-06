@@ -39,4 +39,4 @@ def nasa_flask_app():
         return render_template('error.html', error=error_message)
 
 if __name__ == '__main__':
-    app.run(debug=debug_mode)  # Use the debug mode value set earlier
+    app.run(debug=debug_mode)  # pragma: no cover
