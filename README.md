@@ -10,6 +10,7 @@ A lightweight web application built with the Python Flask framework that display
 - [Running the Application](#running-the-application)
   - [Running Container Locally](#running-container-locally)
   - [Accessing the Application](#accessing-the-application)
+- [Testing](#testing)
 - [Project Structure](#project-structure)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
@@ -56,7 +57,7 @@ A lightweight web application built with the Python Flask framework that display
 A run script is provided to test and debug the container:
 
 ```bash
-./run.sh [dev|prod] [debug|nodebug]
+./docker-run.sh [dev|prod] [debug|nodebug]
 ```
 
 Positional arguments:
@@ -66,16 +67,16 @@ Positional arguments:
 Examples:
 ```bash
 # Run in development mode with default debug setting
-./run.sh dev
+./docker-run.sh dev
 
 # Run in production mode with default debug setting
-./run.sh prod
+./docker-run.sh prod
 
 # Run in development mode with debug forced on
-./run.sh dev debug
+./docker-run.sh dev debug
 
 # Run in production mode with debug forced on (for troubleshooting)
-./run.sh prod debug
+./docker-run.sh prod debug
 ```
 
 ### Accessing the Application
@@ -87,6 +88,37 @@ http://localhost:5000/
 
 Navigate to `http://localhost:5000/nasa_flask_app.html` to see the Astronomy Picture of the Day.
 
+## Testing
+
+The application includes a test suite to verify functionality and maintain code quality.
+
+### Running Tests Locally
+
+To run the tests locally:
+
+```bash
+./test.sh
+```
+
+This script:
+- Sets up a Python virtual environment if not running in CI
+- Installs required dependencies
+- Runs pytest with coverage reporting
+- Generates coverage reports in terminal, XML, and HTML formats
+
+### Test Coverage
+
+The test suite aims to maintain at least 90% code coverage. Coverage reports are generated in:
+- Terminal output for quick reference
+- XML format for CI tools
+- HTML format for detailed local analysis (not in CI mode)
+
+To view the HTML coverage report, open `htmlcov/index.html` in your browser after running tests.
+
+### Continuous Integration
+
+The test suite automatically runs on GitHub Actions for all pull requests and commits to the main branch, ensuring consistent quality across changes.
+
 ## Project Structure
 
 ```
@@ -94,19 +126,24 @@ potd-web-app/
 ├── app.py                  # Main Flask application
 ├── Dockerfile              # Docker configuration
 ├── requirements.txt        # Python dependencies
-├── run.sh                  # Run script for local development
+├── docker-run.sh           # Docker run script for local development
+├── test.sh                 # Test script for running unit tests
 ├── common.env              # Common environment variables
 ├── dev.env                 # Development-specific variables
 ├── prod.env                # Production-specific variables
+├── tests/                  # Test directory
+│   ├── conftest.py         # Test fixtures and configuration
+│   └── test_routes.py      # Route tests
 └── templates/              # HTML templates
     ├── index.html          # Landing page
-    └── nasa_flask_app.html # APOD display page
+    ├── nasa_flask_app.html # APOD display page
+    └── error.html          # Error page
 ```
 
 ## Deployment
 
 For production deployment, make sure to:
-1. Use the production environment: `./run.sh prod`
+1. Use the production environment: `./docker-run.sh prod`
 2. Ensure your API key is kept secure with a secret management system
 3. Consider implementing HTTPS if deploying to a public server
 
@@ -115,7 +152,8 @@ For production deployment, make sure to:
 If you encounter any issues:
 - Verify your NASA API key is valid
 - Check network connectivity to the NASA API endpoint
-- Enable debug mode with `./run.sh dev debug` for detailed error messages
+- Enable debug mode with `./docker-run.sh dev debug` for detailed error messages
+- Review test results for any failures using `./test.sh`
 
 ## Credits
 
