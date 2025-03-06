@@ -1,7 +1,10 @@
-# Python bytecode files
+# Python bytecode/env files
 __pycache__/
 *.py[cod]
 *$py.class
+.py*
+*coverage*
+venv
 
 # Environment files
 common.env
