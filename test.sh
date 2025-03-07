@@ -109,9 +109,6 @@ run_code_quality() {
     # Run isort
     run_command "isort" "isort --check --profile black  ${TARGET_PATH}" || status=1
     
-    # Run flake8
-    run_command "flake8" "flake8 ${TARGET_PATH}" || status=1
-    
     # Run pylint
     run_command "pylint" "pylint ${TARGET_PATH}" || status=1
     
@@ -154,9 +151,6 @@ run_lint() {
     
     print_message "${YELLOW}" "Linting code in ${TARGET_PATH}..."
     
-    # Run flake8
-    run_command "flake8" "flake8 ${TARGET_PATH}" || status=1
-    
     # Run pylint
     run_command "pylint" "pylint ${TARGET_PATH}" || status=1
     
@@ -179,7 +173,7 @@ Options:
   --test            Run pytest with coverage
   --quality         Run all code quality checks
   --format          Run formatting tools (black, isort)
-  --lint            Run linting tools (flake8, pylint)
+  --lint            Run linting tools (pylint)
   --all             Run both tests and all quality checks
   --help          Show this help message
 
