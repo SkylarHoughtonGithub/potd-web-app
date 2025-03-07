@@ -1,0 +1,6 @@
+[MASTER]
+ignore=venv,__pycache__,.git
+ignore-patterns=^\\.#
+
+[FORMAT]
+max-line-length=88
