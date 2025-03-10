@@ -1,0 +1,12 @@
+[FORMAT]
+max-line-length=88
+
+[MASTER]
+ignore=venv,__pycache__,.git
+ignore-patterns=^\\.#
+
+[MESSAGES CONTROL]
+disable=redefined-outer-name
+
+[TYPECHECK]
+ignored-modules=pytest

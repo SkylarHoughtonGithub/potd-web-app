@@ -1,0 +1,6 @@
+[project]
+name = "potd-web-app"
+version = "0.1.0"
+description = "Flask App to leverage NASAS APOD API with flask web framework"
+requires-python = ">=3.8, <3.13"
+# Other metadata follows...

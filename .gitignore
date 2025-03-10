@@ -2,9 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.py*
 *coverage*
 venv
+.pytest*
+.mypy*
 
 # Environment files
 common.env

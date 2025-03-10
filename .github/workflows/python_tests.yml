@@ -1,0 +1,97 @@
+name: Python Tests and Quality Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Tests with Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install system dependencies for Pillow
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pytest pytest-cov
+        
+    - name: Make test script executable
+      run: chmod +x ./test.sh
+    
+    - name: Run tests
+      run: ./test.sh --test
+      env:
+        CI: true
+        NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
+        
+    - name: Check minimum coverage
+      run: |
+        COVERAGE=$(python -c "import xml.etree.ElementTree as ET; print(ET.parse('coverage.xml').getroot().get('line-rate'))")
+        if (( $(echo "$COVERAGE < 0.9" | bc -l) )); then
+          echo "Code coverage is below 90%"
+          exit 1
+        fi
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-python-${{ matrix.python-version }}
+        path: coverage.xml
+        if-no-files-found: error
+
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # Use a fixed version for consistency
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install black isort pylint mypy
+        
+    - name: Make test script executable
+      run: chmod +x ./test.sh
+    
+    - name: Run code quality checks
+      id: quality
+      run: ./test.sh --quality
+      continue-on-error: true
+      env:
+        CI: true
+
+    - name: Provide formatting instructions if quality check fails
+      if: steps.quality.outcome != 'success'
+      run: |
+        echo "::error::Code quality checks failed. 
+        echo "::error::Please review output and implement requested changes."
+        echo "::error::Additionally, to fix formatting issues, run the following commands locally:"
+        echo "::error::  ./test.sh --format"
+        echo "::error::Then commit and push the changes."
+        exit 1
