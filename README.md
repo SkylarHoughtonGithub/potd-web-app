@@ -11,6 +11,10 @@ A lightweight web application built with the Python Flask framework that display
   - [Running Container Locally](#running-container-locally)
   - [Accessing the Application](#accessing-the-application)
 - [Testing](#testing)
+  - [Running Tests Locally](#running-tests-locally)
+  - [Test Options](#test-options)
+  - [Test Coverage](#test-coverage)
+  - [Continuous Integration](#continuous-integration)
 - [Project Structure](#project-structure)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
@@ -90,21 +94,42 @@ Navigate to `http://localhost:5000/nasa_flask_app.html` to see the Astronomy Pic
 
 ## Testing
 
-The application includes a test suite to verify functionality and maintain code quality.
+The application includes a comprehensive test suite to verify functionality and maintain code quality.
 
 ### Running Tests Locally
 
-To run the tests locally:
+The test script supports multiple testing modes:
 
 ```bash
-./test.sh
+./test.sh [option] [path]
 ```
 
-This script:
-- Sets up a Python virtual environment if not running in CI
-- Installs required dependencies
-- Runs pytest with coverage reporting
-- Generates coverage reports in terminal, XML, and HTML formats
+### Test Options
+
+- `--test`: Run pytest with coverage reports
+- `--quality`: Run all code quality checks (includes formatting checks, linting, and type checking)
+- `--format`: Apply formatting tools (black, isort) to fix style issues
+- `--lint`: Run just the linting tools (pylint)
+- `--all`: Run both tests and all quality checks
+- `--help`: Show help message with all options
+
+Examples:
+```bash
+# Run unit tests with coverage
+./test.sh --test
+
+# Run code quality checks on specific directories
+./test.sh --quality app/ tests/
+
+# Format your code to meet style requirements
+./test.sh --format
+
+# Run only linting checks
+./test.sh --lint
+
+# Run all checks (tests and code quality)
+./test.sh --all
+```
 
 ### Test Coverage
 
@@ -117,7 +142,11 @@ To view the HTML coverage report, open `htmlcov/index.html` in your browser afte
 
 ### Continuous Integration
 
-The test suite automatically runs on GitHub Actions for all pull requests and commits to the main branch, ensuring consistent quality across changes.
+The test suite automatically runs on GitHub Actions for all pull requests and commits to the main branch, ensuring consistent quality across changes. The CI pipeline includes:
+
+- Tests across multiple Python versions (3.8 to 3.12)
+- Code quality checks
+- Coverage verification (minimum 90% coverage)
 
 ## Project Structure
 
@@ -127,7 +156,7 @@ potd-web-app/
 ├── Dockerfile              # Docker configuration
 ├── requirements.txt        # Python dependencies
 ├── docker-run.sh           # Docker run script for local development
-├── test.sh                 # Test script for running unit tests
+├── test.sh                 # Test script for running unit and quality tests
 ├── common.env              # Common environment variables
 ├── dev.env                 # Development-specific variables
 ├── prod.env                # Production-specific variables
@@ -153,7 +182,9 @@ If you encounter any issues:
 - Verify your NASA API key is valid
 - Check network connectivity to the NASA API endpoint
 - Enable debug mode with `./docker-run.sh dev debug` for detailed error messages
-- Review test results for any failures using `./test.sh`
+- Run tests with `./test.sh --test` to check for functional issues
+- Run code quality checks with `./test.sh --quality` to identify style problems
+- If code quality checks fail, run `./test.sh --format` to automatically fix most style issues
 
 ## Credits
 
