@@ -89,7 +89,9 @@ jobs:
     - name: Provide formatting instructions if quality check fails
       if: steps.quality.outcome != 'success'
       run: |
-        echo "::error::Code quality checks failed. To fix formatting issues, run the following commands locally:"
+        echo "::error::Code quality checks failed. 
+        echo "::error::Please review output and implement requested changes."
+        echo "::error::Additionally, to fix formatting issues, run the following commands locally:"
         echo "::error::  ./test.sh --format"
         echo "::error::Then commit and push the changes."
         exit 1
