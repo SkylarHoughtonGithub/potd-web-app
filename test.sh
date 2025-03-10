@@ -134,7 +134,7 @@ run_format() {
     run_command "black" "black ${TARGET_PATH}" || status=1
     
     # Run isort
-    run_command "isort" "isort --profile black --remove-unused ${TARGET_PATH}" || status=1
+    run_command "isort" "isort --profile black --remove-redundant-aliases ${TARGET_PATH}" || status=1
     
     if [ $status -eq 0 ]; then
         print_message "${GREEN}" "Code formatting completed successfully!"

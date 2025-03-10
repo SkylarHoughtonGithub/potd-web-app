@@ -1,18 +1,18 @@
+"""pytest configuration"""
+
 import os
 import sys
 
 import pytest
-from flask import Flask
+
+from app import app as flask_app
 
 # Add the parent directory to sys.path to import your app module
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# Import the app from the main file
-from app import app as flask_app
-
 
 @pytest.fixture
-def app():
+def test_app():
     """Create and configure a Flask app for testing."""
     # Set testing config
     flask_app.config.update(
