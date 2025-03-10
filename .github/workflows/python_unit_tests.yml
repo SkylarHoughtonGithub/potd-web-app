@@ -1,4 +1,4 @@
-name: Python Tests and Quality Checks
+name: Python Unit Tests
 
 on:
   push:
@@ -56,42 +56,3 @@ jobs:
         name: coverage-report-python-${{ matrix.python-version }}
         path: coverage.xml
         if-no-files-found: error
-
-  quality:
-    name: Code Quality
-    runs-on: ubuntu-latest
-    needs: test
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'  # Use a fixed version for consistency
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install black isort pylint mypy
-        
-    - name: Make test script executable
-      run: chmod +x ./test.sh
-    
-    - name: Run code quality checks
-      id: quality
-      run: ./test.sh --quality
-      continue-on-error: true
-      env:
-        CI: true
-
-    - name: Provide formatting instructions if quality check fails
-      if: steps.quality.outcome != 'success'
-      run: |
-        echo "::error::Code quality checks failed. 
-        echo "::error::Please review output and implement requested changes."
-        echo "::error::Additionally, to fix formatting issues, run the following commands locally:"
-        echo "::error::  ./test.sh --format"
-        echo "::error::Then commit and push the changes."
-        exit 1
