@@ -9,7 +9,7 @@ venv
 
 # Environment files
 common.env
-
+security_reports/
 
 # Flask stuff
 instance/
