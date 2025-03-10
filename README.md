@@ -1,5 +1,9 @@
 # Planet Of The Day Flask Web App
 
+[![Python Unit Tests](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_unit_tests.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_unit_tests.yml)
+
+[![Python Quality Checks](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_lint_quality_check.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_lint_quality_check.yml)
+
 A lightweight web application built with the Python Flask framework that displays NASA's Astronomy Picture of the Day (APOD). The application fetches the latest celestial imagery and accompanying explanation from NASA's public API which refreshes daily.
 
 ## Table of Contents
