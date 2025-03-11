@@ -4,6 +4,8 @@
 
 [![Python Quality Checks](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_lint_quality_check.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_lint_quality_check.yml)
 
+[![Python Security Scan](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_scan.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_scan.yml)
+
 A lightweight web application built with the Python Flask framework that displays NASA's Astronomy Picture of the Day (APOD). The application fetches the latest celestial imagery and accompanying explanation from NASA's public API which refreshes daily.
 
 ## Table of Contents
@@ -18,6 +20,7 @@ A lightweight web application built with the Python Flask framework that display
   - [Running Tests Locally](#running-tests-locally)
   - [Test Options](#test-options)
   - [Test Coverage](#test-coverage)
+  - [Security Scanning](#security-scanning)
   - [Continuous Integration](#continuous-integration)
 - [Project Structure](#project-structure)
 - [Deployment](#deployment)
@@ -114,6 +117,7 @@ The test script supports multiple testing modes:
 - `--quality`: Run all code quality checks (includes formatting checks, linting, and type checking)
 - `--format`: Apply formatting tools (black, isort) to fix style issues
 - `--lint`: Run just the linting tools (pylint)
+- `--security`: Run security scanning tools (bandit, immunipy)
 - `--all`: Run both tests and all quality checks
 - `--help`: Show help message with all options
 
@@ -131,6 +135,9 @@ Examples:
 # Run only linting checks
 ./test.sh --lint
 
+# Run security scans to identify vulnerabilities
+./test.sh --security
+
 # Run all checks (tests and code quality)
 ./test.sh --all
 ```
@@ -144,12 +151,35 @@ The test suite aims to maintain at least 90% code coverage. Coverage reports are
 
 To view the HTML coverage report, open `htmlcov/index.html` in your browser after running tests.
 
+### Security Scanning
+
+The application includes security scanning tools to identify potential vulnerabilities:
+
+- **Bandit**: Static code analysis tool designed to find common security issues in Python code
+- **Immunipy**: Dependency vulnerability scanner that checks for known vulnerabilities in installed packages
+
+Security scans can be run with:
+```bash
+./test.sh --security
+```
+
+The scans check for:
+- Potential security issues in the Python code
+- Use of dangerous functions
+- Vulnerabilities in third-party dependencies
+- Insecure dependency versions
+
+#### Security Reports
+
+When run through the GitHub Actions workflow, security scan results are automatically saved as artifacts, which can be accessed from the Actions tab in your repository. These reports provide detailed information about any security issues found.
+
 ### Continuous Integration
 
 The test suite automatically runs on GitHub Actions for all pull requests and commits to the main branch, ensuring consistent quality across changes. The CI pipeline includes:
 
 - Tests across multiple Python versions (3.8 to 3.12)
 - Code quality checks
+- Security scanning
 - Coverage verification (minimum 90% coverage)
 
 ## Project Structure
@@ -164,6 +194,10 @@ potd-web-app/
 ├── common.env              # Common environment variables
 ├── dev.env                 # Development-specific variables
 ├── prod.env                # Production-specific variables
+├── .github/workflows/
+│   ├── python_unit_tests.yml        # Unit test workflow
+│   ├── python_lint_quality_check.yml # Code quality workflow
+│   └── python_security_scan.yml     # Security scan workflow
 ├── tests/                  # Test directory
 │   ├── conftest.py         # Test fixtures and configuration
 │   └── test_routes.py      # Route tests
@@ -179,6 +213,8 @@ For production deployment, make sure to:
 1. Use the production environment: `./docker-run.sh prod`
 2. Ensure your API key is kept secure with a secret management system
 3. Consider implementing HTTPS if deploying to a public server
+4. Regularly run security scans to identify and address vulnerabilities
+5. Keep dependencies updated to mitigate security risks
 
 ## Troubleshooting
 
@@ -188,6 +224,7 @@ If you encounter any issues:
 - Enable debug mode with `./docker-run.sh dev debug` for detailed error messages
 - Run tests with `./test.sh --test` to check for functional issues
 - Run code quality checks with `./test.sh --quality` to identify style problems
+- Run security scans with `./test.sh --security` to check for vulnerabilities
 - If code quality checks fail, run `./test.sh --format` to automatically fix most style issues
 
 ## Credits
