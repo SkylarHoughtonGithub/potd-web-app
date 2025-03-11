@@ -1,0 +1,42 @@
+name: Python Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Make test script executable
+      run: chmod +x ./test.sh
+    
+    - name: Run security scan
+      run: |
+        # Run the scan and capture exit code
+        ./test.sh --security | tee security-results.txt
+        exit_code=${PIPESTATUS[0]}
+        
+        # Return the original exit code
+        exit $exit_code
+      env:
+        CI: true
+        
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-scan-results
+        path: security-results.txt
+        if-no-files-found: warn
