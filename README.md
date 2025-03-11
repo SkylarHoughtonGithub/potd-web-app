@@ -207,7 +207,7 @@ docker build -t potd-web-app:local .
 
 ### GitHub Actions Automated Build
 
-This project includes a GitHub Actions workflow that automatically builds and pushes Docker images to GitHub Container Registry (GHCR) whenever changes are pushed to the main branch.
+This project includes a GitHub Actions workflow that automatically builds and pushes Docker images to GitHub Container Registry (GHCR) after all quality and security checks have successfully completed on the main branch.
 
 To set up the automated build workflow:
 

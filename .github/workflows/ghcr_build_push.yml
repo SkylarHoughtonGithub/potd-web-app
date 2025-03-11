@@ -1,11 +1,16 @@
 name: Build and Push Docker Image
 
+# Only run this workflow after specific workflows have completed successfully
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Python Unit Tests"       # Match your exact workflow name
+      - "Python Quality Checks"   # Match your exact workflow name
+      - "Python Security Scan"    # Match your exact workflow name
+    types:
+      - completed
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  # Allow manual trigger
+  # Allow manual trigger for testing
   workflow_dispatch:
 
 env:
@@ -15,6 +20,8 @@ env:
 
 jobs:
   build-and-push:
+    # Only run if the triggering workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
