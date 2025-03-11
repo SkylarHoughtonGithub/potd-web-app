@@ -163,10 +163,78 @@ run_lint() {
     return $status
 }
 
+# Run security scanning tools
+run_security() {
+    local status=0
+    
+    print_message "${YELLOW}" "Running security scans on ${TARGET_PATH}..."
+    
+    # Create directory for reports
+    mkdir -p security_reports
+    
+    # Run bandit security scanner
+    print_message "${YELLOW}" "Running bandit..."
+    if ! command_exists "bandit"; then
+        print_message "${YELLOW}" "Installing bandit..."
+        pip install bandit
+    fi
+    
+    if bandit -r "${TARGET_PATH}" \
+        --exclude ./venv,./env,./.venv,./.git,./tests,./__pycache__ \
+        --skip B101,B303,B311 \
+        -f txt -o security_reports/bandit_report.txt; then
+        print_message "${GREEN}" "✓ bandit scan passed"
+    else
+        print_message "${RED}" "✗ bandit found security issues"
+        status=1
+    fi
+    
+    # Run safety check on dependencies
+    print_message "${YELLOW}" "Running safety check..."
+    if ! command_exists "safety"; then
+        print_message "${YELLOW}" "Installing safety..."
+        pip install safety
+    fi
+    
+    if [ -f "requirements.txt" ]; then
+        # Create a clean file with only ASCII content
+        tr -cd '\11\12\15\40-\176' < requirements.txt > requirements_clean.txt
+        
+        # Check if the clean file has content
+        if [ -s requirements_clean.txt ]; then
+            if safety check -r requirements_clean.txt --output text > security_reports/safety_report.txt 2>&1; then
+                print_message "${GREEN}" "✓ safety check passed"
+            else
+                print_message "${RED}" "✗ safety found vulnerable dependencies"
+                status=1
+            fi
+        else
+            print_message "${RED}" "Warning: Could not process requirements.txt file"
+            echo "Warning: Could not process requirements.txt file" > security_reports/safety_report.txt
+            echo "Please check that requirements.txt is a valid text file" >> security_reports/safety_report.txt
+            status=1
+        fi
+        
+        # Clean up
+        rm requirements_clean.txt
+    else
+        print_message "${YELLOW}" "requirements.txt not found. Skipping safety check."
+        echo "requirements.txt not found. Skipping safety check." > security_reports/safety_report.txt
+    fi
+    
+    if [ $status -eq 0 ]; then
+        print_message "${GREEN}" "All security checks passed! Reports are in the security_reports directory."
+    else
+        print_message "${RED}" "Some security checks found issues. See reports in the security_reports directory."
+    fi
+    
+    return $status
+}
+
 # Show help message
 show_help() {
     cat << EOF
-Development Script - Handles both testing and code quality
+Development Script - Handles testing, code quality, and security checks
 Usage: ./test.sh [option] [path]
 
 Options:
@@ -174,13 +242,15 @@ Options:
   --quality         Run all code quality checks
   --format          Run formatting tools (black, isort)
   --lint            Run linting tools (pylint)
-  --all             Run both tests and all quality checks
-  --help          Show this help message
+  --security        Run security scanning tools (bandit, safety)
+  --all             Run all tests, quality, and security checks
+  --help            Show this help message
 
 Examples:
   ./test.sh --test
-  ./test.sh --quality . tests/
-  ./test.sh --format . tests/
+  ./test.sh --quality app/ tests/
+  ./test.sh --format app/ tests/
+  ./test.sh --security app/
   ./test.sh --all
 EOF
 }
@@ -219,10 +289,18 @@ case "$1" in
         cleanup_environment
         exit $status
         ;;
+    --security)
+        setup_environment
+        run_security
+        status=$?
+        cleanup_environment
+        exit $status
+        ;;
     --all)
         setup_environment
         run_tests
         run_code_quality
+        run_security
         status=$?
         cleanup_environment
         exit $status
