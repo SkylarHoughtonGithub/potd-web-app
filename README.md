@@ -4,7 +4,7 @@
 
 [![Python Quality Checks](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_lint_quality_check.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_lint_quality_check.yml)
 
-[![Python Security Scan](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_scan.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_scan.yml)
+[![Python Security Scan](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_scan.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_tests.yml)
 
 A lightweight web application built with the Python Flask framework that displays NASA's Astronomy Picture of the Day (APOD). The application fetches the latest celestial imagery and accompanying explanation from NASA's public API which refreshes daily.
 
