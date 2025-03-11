@@ -6,6 +6,8 @@
 
 [![Python Security Scan](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_tests.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_tests.yml)
 
+[![Docker Build and Push](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/docker-build.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/docker-build.yml)
+
 A lightweight web application built with the Python Flask framework that displays NASA's Astronomy Picture of the Day (APOD). The application fetches the latest celestial imagery and accompanying explanation from NASA's public API which refreshes daily.
 
 ## Table of Contents
@@ -22,6 +24,11 @@ A lightweight web application built with the Python Flask framework that display
   - [Test Coverage](#test-coverage)
   - [Security Scanning](#security-scanning)
   - [Continuous Integration](#continuous-integration)
+- [Docker Image Build](#docker-image-build)
+  - [Local Docker Build](#local-docker-build)
+  - [GitHub Actions Automated Build](#github-actions-automated-build)
+  - [Using Container Registry Images](#using-container-registry-images)
+  - [Docker Image Tags](#docker-image-tags)
 - [Project Structure](#project-structure)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
@@ -182,6 +189,94 @@ The test suite automatically runs on GitHub Actions for all pull requests and co
 - Security scanning
 - Coverage verification (minimum 90% coverage)
 
+## Docker Image Build
+
+The application can be built both locally and automatically using GitHub Actions.
+
+### Local Docker Build
+
+To build the Docker image locally:
+
+```bash
+# Using the provided build script
+./build.sh
+
+# Or manually with Docker
+docker build -t potd-web-app:local .
+```
+
+### GitHub Actions Automated Build
+
+This project includes a GitHub Actions workflow that automatically builds and pushes Docker images to GitHub Container Registry (GHCR) whenever changes are pushed to the main branch.
+
+To set up the automated build workflow:
+
+1. **Create the workflow file** at `.github/workflows/docker-build.yml` with the provided content from the repository
+
+2. **Ensure your repository has access to GitHub Container Registry:**
+   - Go to your repository settings
+   - Navigate to "Packages" settings
+   - Confirm GitHub Packages is enabled for the repository
+
+3. **Push changes to trigger the workflow:**
+   - Any push to the main branch will trigger the build
+   - You can also manually trigger the workflow from the Actions tab in GitHub
+
+### Using Container Registry Images
+
+After the workflow runs successfully, you can pull the Docker image:
+
+```bash
+# Replace with your GitHub username and repository name
+docker pull ghcr.io/skylar-houghton/potd-web-app:latest
+```
+
+Or in Kubernetes/Docker Compose files:
+
+```yaml
+image: ghcr.io/skylar-houghton/potd-web-app:main
+```
+
+### Docker Image Tags
+
+The GitHub Actions workflow automatically applies several tags to each built image:
+
+- **Branch-based tags** - Images are tagged with the branch name:
+  ```
+  ghcr.io/skylar-houghton/potd-web-app:main
+  ```
+
+- **Pull Request tags** - Images built from PRs get tagged with the PR number:
+  ```
+  ghcr.io/skylar-houghton/potd-web-app:pr-123
+  ```
+
+- **Commit SHA tags** - Each image is tagged with the short commit hash:
+  ```
+  ghcr.io/skylar-houghton/potd-web-app:a1b2c3d
+  ```
+
+- **Latest tag** - The main branch also gets the `latest` tag:
+  ```
+  ghcr.io/skylar-houghton/potd-web-app:latest
+  ```
+
+- **Semantic Version tags** - When you tag a release with a version number (e.g., `v1.2.3`), the image gets these tags:
+  ```
+  ghcr.io/skylar-houghton/potd-web-app:1.2.3
+  ghcr.io/skylar-houghton/potd-web-app:1.2
+  ```
+
+To create a versioned release:
+
+```bash
+# Tag your commit
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The workflow will automatically build and tag the image with version `1.0.0`.
+
 ## Project Structure
 
 ```
@@ -197,7 +292,8 @@ potd-web-app/
 ├── .github/workflows/
 │   ├── python_unit_tests.yml        # Unit test workflow
 │   ├── python_lint_quality_check.yml # Code quality workflow
-│   └── python_security_scan.yml     # Security scan workflow
+│   ├── python_security_scan.yml     # Security scan workflow
+│   └── docker-build.yml             # Docker build and push workflow
 ├── tests/                  # Test directory
 │   ├── conftest.py         # Test fixtures and configuration
 │   └── test_routes.py      # Route tests
@@ -215,6 +311,7 @@ For production deployment, make sure to:
 3. Consider implementing HTTPS if deploying to a public server
 4. Regularly run security scans to identify and address vulnerabilities
 5. Keep dependencies updated to mitigate security risks
+6. Use specific version tags (e.g., `1.2.3`) for stable deployments rather than `latest`
 
 ## Troubleshooting
 
@@ -226,6 +323,7 @@ If you encounter any issues:
 - Run code quality checks with `./test.sh --quality` to identify style problems
 - Run security scans with `./test.sh --security` to check for vulnerabilities
 - If code quality checks fail, run `./test.sh --format` to automatically fix most style issues
+- For Docker image issues, check the GitHub Actions workflow run logs
 
 ## Credits
 
