@@ -184,7 +184,7 @@ run_security() {
 
     # Run immunipy dep vuln scanner
     if [ -f "requirements.txt" ]; then
-        if immunipy scan requirements.txt; then
+        if immunipy requirements.txt; then
             print_message "${GREEN}" "✓ immunipy scan passed"
         else
             print_message "${RED}" "✗ immunipy found security issues"
