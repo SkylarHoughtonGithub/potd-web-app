@@ -1,32 +1,33 @@
-"""pytest configuration"""
+"""Test configuration and fixtures."""
 
-import os
 import sys
+from pathlib import Path
 
 import pytest
 
-# Add the parent directory to sys.path to import your app module
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# Add the project root directory to the Python path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# pylint: disable=wrong-import-position
-# isort: skip
-from app import app as flask_app
+from src import create_app  # pylint: disable=wrong-import-position
 
 
 @pytest.fixture
 def app():
     """Create and configure a Flask app for testing."""
-    # Set testing config
-    flask_app.config.update(
+    app = create_app()
+    app.config.update(
         {
             "TESTING": True,
+            "NASA_API_KEY": "DEMO_KEY",
         }
     )
 
-    yield flask_app
+    # Return test client
+    with app.app_context():
+        yield app
 
 
 @pytest.fixture
 def client(app):
-    """A test client for the app."""
+    """Create a test client for the app."""
     return app.test_client()
