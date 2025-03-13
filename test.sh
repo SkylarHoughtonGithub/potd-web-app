@@ -110,7 +110,7 @@ run_code_quality() {
     run_command "isort" "isort --check --profile black ${TARGET_PATH}" || status=1
     
     # Run pylint
-    run_command "pylint" "${TARGET_PATH}" || status=1
+    run_command "pylint" "pylint ${TARGET_PATH}" || status=1
     
     # Run mypy
     run_command "mypy" "mypy ${TARGET_PATH}" || status=1
