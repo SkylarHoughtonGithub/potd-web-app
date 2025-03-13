@@ -83,10 +83,10 @@ run_tests() {
     
     if [ "$CI" = "true" ]; then
         # CI environment - use XML for reporting tools and terminal for feedback
-        pytest --cov=app --cov-report=xml --cov-report=term tests/
+        PYTHONPATH=. pytest --cov=src --cov-report=xml --cov-report=term tests/
     else
         # Local environment - include HTML report for viewing in browser
-        pytest --cov=app --cov-report=term --cov-report=html tests/
+        PYTHONPATH=. pytest --cov=src --cov-report=term --cov-report=html tests/
         
         # Print message about HTML report location
         echo ""
@@ -107,7 +107,7 @@ run_code_quality() {
     run_command "black" "black --check ${TARGET_PATH}" || status=1
     
     # Run isort
-    run_command "isort" "isort --check --profile black  ${TARGET_PATH}" || status=1
+    run_command "isort" "isort --check --profile black ${TARGET_PATH}" || status=1
     
     # Run pylint
     run_command "pylint" "pylint ${TARGET_PATH}" || status=1
@@ -218,9 +218,9 @@ Options:
 
 Examples:
   ./test.sh --test
-  ./test.sh --quality app/ tests/
-  ./test.sh --format app/ tests/
-  ./test.sh --security app/
+  ./test.sh --quality src/ tests/
+  ./test.sh --format src/ tests/
+  ./test.sh --security src/
   ./test.sh --all
 EOF
 }

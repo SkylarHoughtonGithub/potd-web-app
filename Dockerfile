@@ -1,7 +1,7 @@
 FROM rockylinux:9
 
 # Set environment variables
-ENV FLASK_APP=src/app.py \
+ENV FLASK_APP=app.py \
     FLASK_ENV=development \
     FLASK_DEBUG=true
 
