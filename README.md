@@ -5,7 +5,7 @@
 [![Python Security Scan](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_tests.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/python_security_tests.yml)
 [![Build and Push Docker Image](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/ghcr_build_push.yml/badge.svg)](https://github.com/SkylarHoughtonGithub/potd-web-app/actions/workflows/ghcr_build_push.yml)
 
-A lightweight web application built with the Python Flask framework that displays NASA's Astronomy Picture of the Day (APOD). The application fetches the latest celestial imagery and accompanying explanation from NASA's public API which refreshes daily.
+A lightweight web application built with the Python Flask framework that displays NASA's Astronomy Picture of the Day (APOD). The application fetches the latest celestial imagery and accompanying explanation from NASA's public API which refreshes daily. It features a RESTful API with Swagger documentation for seamless integration with other services.
 
 ## Table of Contents
 
@@ -15,6 +15,7 @@ A lightweight web application built with the Python Flask framework that display
 - [Running the Application](#running-the-application)
   - [Running Container Locally](#running-container-locally)
   - [Accessing the Application](#accessing-the-application)
+- [API Documentation](#api-documentation)
 - [Testing](#testing)
   - [Running Tests Locally](#running-tests-locally)
   - [Test Options](#test-options)
@@ -37,6 +38,7 @@ A lightweight web application built with the Python Flask framework that display
 - Displays the current Astronomy Picture of the Day from NASA
 - Shows the title, date, and detailed explanation for each image
 - Responsive design that works on desktop and mobile devices
+- RESTful API with comprehensive Swagger documentation
 - Error handling for API connectivity issues
 - Environment-specific configuration for development and production
 
@@ -101,7 +103,16 @@ Once running, the application will be available at:
 http://localhost:5000/
 ```
 
-Navigate to `http://localhost:5000/nasa_flask_app.html` to see the Astronomy Picture of the Day.
+The web interface will automatically redirect you to the main page at `/web/` where you can access the Astronomy Picture of the Day at `/web/today`.
+
+## API Documentation
+
+The application provides a RESTful API with Swagger documentation for easy integration with other services:
+
+- Swagger UI: `/swagger`
+- API endpoints:
+  - `/api/apod` - Get the Astronomy Picture of the Day
+  - Supports parameters for date, date ranges, and more
 
 ## Testing
 
@@ -278,7 +289,7 @@ The workflow will automatically build and tag the image with version `1.0.0`.
 
 ```
 potd-web-app/
-├── app.py                  # Main Flask application
+├── app.py                  # Application entry point
 ├── Dockerfile              # Docker configuration
 ├── requirements.txt        # Python dependencies
 ├── docker-run.sh           # Docker run script for local development
@@ -291,13 +302,27 @@ potd-web-app/
 │   ├── python_lint_quality_check.yml # Code quality workflow
 │   ├── python_security_scan.yml     # Security scan workflow
 │   └── docker-build.yml             # Docker build and push workflow
+├── src/                    # Source code directory
+│   ├── __init__.py         # Application factory
+│   ├── config.py           # Configuration settings
+│   ├── utils.py            # Utility functions
+│   ├── api/                # API components
+│   │   ├── __init__.py     # API initialization
+│   │   ├── apod.py         # APOD endpoints
+│   │   └── models.py       # API models
+│   ├── web/                # Web UI components
+│   │   ├── __init__.py     # Web UI initialization
+│   │   └── routes.py       # Web routes
+│   ├── templates/          # HTML templates
+│   │   ├── index.html      # Landing page
+│   │   ├── apod_template.html # APOD display page
+│   │   └── error.html      # Error page
+│   └── static/             # Static assets
 ├── tests/                  # Test directory
 │   ├── conftest.py         # Test fixtures and configuration
 │   └── test_routes.py      # Route tests
-└── templates/              # HTML templates
-    ├── index.html          # Landing page
-    ├── nasa_flask_app.html # APOD display page
-    └── error.html          # Error page
+├── mypy.ini                # MyPy configuration
+└── .isort.cfg              # isort configuration
 ```
 
 ## Deployment
@@ -321,11 +346,13 @@ If you encounter any issues:
 - Run security scans with `./test.sh --security` to check for vulnerabilities
 - If code quality checks fail, run `./test.sh --format` to automatically fix most style issues
 - For Docker image issues, check the GitHub Actions workflow run logs
+- Check the Swagger documentation at `/swagger` to understand API endpoints
 
 ## Credits
 
 - NASA for providing the APOD API
 - [Flask](https://flask.palletsprojects.com/) web framework
+- [Flask-RestX](https://flask-restx.readthedocs.io/) for API and Swagger support
 
 ## License
 
