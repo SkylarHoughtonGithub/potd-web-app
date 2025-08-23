@@ -1,0 +1,56 @@
+name: Build and Push Images to ECR
+
+on:
+  workflow_run:
+    workflows:
+      - "Python Unit Tests"
+      - "Python Quality Checks"
+      - "Python Security Scan"
+    types:
+      - completed
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    
+env:
+  AWS_REGION: us-east-2
+  ECR_REGISTRY_PREFIX: shoutsky
+
+jobs:
+  build-and-push:
+    name: Build and Push
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_NAME: potd-flask
+        IMAGE_PATH: .
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        FULL_REPO="$ECR_REGISTRY/$ECR_REGISTRY_PREFIX-$IMAGE_NAME"
+        
+        docker build -t $FULL_REPO:$IMAGE_TAG $IMAGE_PATH
+        docker push $FULL_REPO:$IMAGE_TAG
+        docker tag $FULL_REPO:$IMAGE_TAG $FULL_REPO:latest
+        docker push $FULL_REPO:latest
+        
+        echo "✅ Pushed: $FULL_REPO:$IMAGE_TAG"
